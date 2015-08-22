@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>運動數據視覺化 { 閃電秀 }</title>
+  <meta charset="utf-8">
+  <meta name="description" content="運動數據視覺化 { 閃電秀 }">
+  <meta name="author" content="Summit Suen">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/lightning.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <aside class="gdbar">
+    <img src="assets/img/Taiwan-R-logo.png">
+  </aside>
+  <hgroup class="auto-fadein">
+    <h1>運動數據視覺化 { 閃電秀 }</h1>
+    <h2>Lightning Talk | R &lt;3 Baseball</h2>
+    <p>Summit Suen<br/>Taiwan R User Group</p>
+  </hgroup>
+    <a href="https://github.com/suensummit/lightning-DSC2015-Vis/zipball/gh-pages" class="example">
+     Download
+    </a>
+  <article></article>  
+  <footer class = 'license'>
+    <a href='http://creativecommons.org/licenses/by-nc-sa/3.0/'>
+    <img width = '80px' src = 'http://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png'>
+    </a>
+  </footer>
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>R 就是要拿來跑統計啊，不然要幹嘛？</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="http://helmetstudio.tk/agar/i/%E6%B3%9B%E8%88%9F%E5%93%A5.png" alt=""></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="title-slide2" id="id" style="background:;">
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>工欲善其事，必先利其器</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># install.packages(&quot;Lahman&quot;)
+library(Lahman)
+library(dplyr)
+totalRS &lt;- Teams %&gt;% select(yearID, R, G) %&gt;% mutate(AvgRperG = R/G) %&gt;% group_by(yearID) %&gt;% summarise(sum(AvgRperG))
+names(totalRS) &lt;- c(&quot;yearID&quot;, &quot;RUN&quot;)
+head(totalRS)
+</code></pre>
+
+<pre><code>## Source: local data frame [6 x 2]
+## 
+##   yearID      RUN
+## 1   1871 93.12897
+## 2   1872 95.21474
+## 3   1873 73.15998
+## 4   1874 58.55903
+## 5   1875 70.08774
+## 6   1876 47.01267
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>工欲善其事，必先利其器</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(ggplot2)
+ggplot(data = totalRS, aes(x = yearID, y = RUN)) + stat_smooth() + geom_line()
+</code></pre>
+
+<pre><code>## geom_smooth: method=&quot;auto&quot; and size of largest group is &lt;1000, so using loess. Use &#39;method = x&#39; to change the smoothing method.
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>工欲善其事，必先利其器</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(Lahman)
+library(dplyr)
+head(filter(Pitching, playerID == &quot;wangch01&quot;))
+</code></pre>
+
+<pre><code>##   playerID yearID stint teamID lgID  W L  G GS CG SHO SV IPouts   H ER HR
+## 1 wangch01   2005     1    NYA   AL  8 5 18 17  0   0  0    349 113 52  9
+## 2 wangch01   2006     1    NYA   AL 19 6 34 33  2   1  1    654 233 88 12
+## 3 wangch01   2007     1    NYA   AL 19 7 30 30  1   0  0    598 199 82  9
+## 4 wangch01   2008     1    NYA   AL  8 2 15 15  1   0  0    285  90 43  4
+## 5 wangch01   2009     1    NYA   AL  1 6 12  9  0   0  0    126  66 45  7
+## 6 wangch01   2011     1    WAS   NL  4 3 11 11  0   0  0    187  67 28  8
+##   BB  SO BAOpp  ERA IBB WP HBP BK BFP GF  R SH SF GIDP
+## 1 32  47    NA 4.02   3  3   6  0 486  0 58 NA NA   NA
+## 2 52  76    NA 3.63   4  6   2  1 900  1 92 NA NA   NA
+## 3 59 104    NA 3.70   1  9   8  1 823  0 84 NA NA   NA
+## 4 35  54    NA 4.07   1  0   3  0 402  0 44 NA NA   NA
+## 5 19  29    NA 9.64   1  3   2  0 206  2 46 NA NA   NA
+## 6 13  25    NA 4.04   0  2   1  0 264  0 35 NA NA   NA
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>工欲善其事，必先利其器</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># install.packages(&quot;Sxslt&quot;, repos = &quot;http://www.omegahat.org/R&quot;, type = &quot;source&quot;)
+# require(devtools)
+# install_github(&quot;openWAR&quot;, &quot;beanumber&quot;)
+require(openWAR)
+getGameIds(date=as.Date(&quot;2015-08-20&quot;))
+</code></pre>
+
+<pre><code>## 
+## Retrieving data from 2015-08-20 ...
+## ...found 11 games
+</code></pre>
+
+<pre><code>##  [1] &quot;gid_2015_08_20_arimlb_cinmlb_1&quot; &quot;gid_2015_08_20_atlmlb_chnmlb_1&quot;
+##  [3] &quot;gid_2015_08_20_chamlb_anamlb_1&quot; &quot;gid_2015_08_20_clemlb_nyamlb_1&quot;
+##  [5] &quot;gid_2015_08_20_kcamlb_bosmlb_1&quot; &quot;gid_2015_08_20_minmlb_balmlb_1&quot;
+##  [7] &quot;gid_2015_08_20_phimlb_miamlb_1&quot; &quot;gid_2015_08_20_sfnmlb_pitmlb_1&quot;
+##  [9] &quot;gid_2015_08_20_tbamlb_houmlb_1&quot; &quot;gid_2015_08_20_texmlb_detmlb_1&quot;
+## [11] &quot;gid_2015_08_20_wasmlb_colmlb_1&quot;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>工欲善其事，必先利其器</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">gd = gameday(gameId=&quot;gid_2015_08_20_chamlb_anamlb_1&quot;)
+</code></pre>
+
+<pre><code>## gid_2015_08_20_chamlb_anamlb_1
+</code></pre>
+
+<pre><code class="r">gd$url
+</code></pre>
+
+<pre><code>##                                                                                                        bis_boxscore.xml 
+##      &quot;http://gd2.mlb.com/components/game/mlb/year_2015/month_08/day_20/gid_2015_08_20_chamlb_anamlb_1/bis_boxscore.xml&quot; 
+##                                                                                                          inning_all.xml 
+## &quot;http://gd2.mlb.com/components/game/mlb/year_2015/month_08/day_20/gid_2015_08_20_chamlb_anamlb_1/inning/inning_all.xml&quot; 
+##                                                                                                          inning_hit.xml 
+## &quot;http://gd2.mlb.com/components/game/mlb/year_2015/month_08/day_20/gid_2015_08_20_chamlb_anamlb_1/inning/inning_hit.xml&quot; 
+##                                                                                                                game.xml 
+##              &quot;http://gd2.mlb.com/components/game/mlb/year_2015/month_08/day_20/gid_2015_08_20_chamlb_anamlb_1/game.xml&quot; 
+##                                                                                                         game_events.xml 
+##       &quot;http://gd2.mlb.com/components/game/mlb/year_2015/month_08/day_20/gid_2015_08_20_chamlb_anamlb_1/game_events.xml&quot;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>工欲善其事，必先利其器</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r"># now playing
+gd$ds$inning
+</code></pre>
+
+<pre><code>##  [1] 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 4 4 4 4 4 4 4 5 5 5 5
+## [36] 5 5 5 5 5 5 5 5 5 5 5 5 6 6 6 6 6 6 6 7 7 7 7 7 7 7 8 8 8 8 8 8 8 8 8
+## [71] 8 9 9 9 9 9 9
+</code></pre>
+
+<pre><code class="r">gd$ds$description
+</code></pre>
+
+<pre><code>##  [1] Shane Victorino singles on a sharp line drive to left fielder Melky Cabrera.                                                                                         
+##  [2] Kole Calhoun lines out sharply to left fielder Melky Cabrera.                                                                                                        
+##  [3] Mike Trout doubles (23) on a sharp line drive to center fielder Adam Eaton.   Shane Victorino scores.                                                                
+##  [4] Albert Pujols grounds out, shortstop Alexei Ramirez to first baseman Adam LaRoche.                                                                                   
+##  [5] C.  J.   Cron grounds out, third baseman Tyler Saladino to first baseman Adam LaRoche.                                                                               
+##  [6] Adam Eaton doubles (20) on a line drive to right fielder Kole Calhoun.                                                                                               
+##  [7] Tyler Saladino out on a sacrifice bunt, pitcher Nick Tropeano to first baseman C.  J.   Cron.   Adam Eaton to 3rd.                                                   
+##  [8] Jose Abreu grounds out, shortstop Erick Aybar to first baseman C.   Cron.   Adam Eaton scores.                                                                       
+##  [9] Melky Cabrera lines out sharply to left fielder Shane Victorino.                                                                                                     
+## [10] Erick Aybar lines out softly to right fielder Avisail Garcia.                                                                                                        
+## [11] Johnny Giavotella singles on a line drive to right fielder Avisail Garcia.  Johnny Giavotella out at 2nd, right fielder Avisail Garcia to shortstop Alexei Ramirez.  
+## [12] Chris Iannetta pops out to second baseman Carlos Sanchez.                                                                                                            
+## [13] Avisail Garcia grounds out, third baseman Kaleb Cowart to first baseman C.  J.   Cron.                                                                               
+## [14] Adam LaRoche flies out to center fielder Mike Trout.                                                                                                                 
+## [15] Alexei Ramirez called out on strikes.                                                                                                                                
+## [16] Kaleb Cowart grounds out, second baseman Carlos Sanchez to first baseman Adam LaRoche.                                                                               
+## [17] Shane Victorino pops out to second baseman Carlos Sanchez.                                                                                                           
+## [18] Kole Calhoun singles on a soft line drive to right fielder Avisail Garcia.                                                                                           
+## [19] Mike Trout walks.   Kole Calhoun to 2nd.                                                                                                                             
+## [20] Albert Pujols walks.   Kole Calhoun to 3rd.    Mike Trout to 2nd.                                                                                                    
+## [21] C.  J.   Cron grounds into a force out, third baseman Tyler Saladino to second baseman Carlos Sanchez.   Albert Pujols out at 2nd.                                   
+## [22] Geovany Soto strikes out swinging.                                                                                                                                   
+## [23] Carlos Sanchez grounds out sharply to first baseman C.  J.   Cron.                                                                                                   
+## [24] Adam Eaton strikes out swinging.                                                                                                                                     
+## [25] Erick Aybar grounds out, third baseman Tyler Saladino to first baseman Adam LaRoche.                                                                                 
+## [26] Johnny Giavotella grounds out, shortstop Alexei Ramirez to first baseman Adam LaRoche.                                                                               
+## [27] Chris Iannetta called out on strikes.                                                                                                                                
+## [28] Tyler Saladino singles on a sharp ground ball to left fielder Shane Victorino.                                                                                       
+## [29] Jose Abreu grounds out, shortstop Erick Aybar to first baseman C.   Cron.   Tyler Saladino to 2nd.                                                                   
+## [30] Melky Cabrera walks.                                                                                                                                                 
+## [31] Avisail Garcia grounds into a double play, shortstop Erick Aybar to second baseman Johnny Giavotella to first baseman C.   Cron.   Melky Cabrera out at 2nd.         
+## [32] Kaleb Cowart grounds out, third baseman Tyler Saladino to first baseman Adam LaRoche.                                                                                
+## [33] Shane Victorino lines out to second baseman Carlos Sanchez.                                                                                                          
+## [34] Kole Calhoun singles on a sharp line drive to right fielder Avisail Garcia.                                                                                          
+## [35] Mike Trout singles on a ground ball to left fielder Melky Cabrera.   Kole Calhoun to 2nd.                                                                            
+## [36] Albert Pujols singles on a sharp line drive to center fielder Adam Eaton.   Kole Calhoun scores.    Mike Trout to 2nd.                                               
+## [37] C.  J.   Cron called out on strikes.                                                                                                                                 
+## [38] Adam LaRoche singles on a ground ball to right fielder Kole Calhoun.                                                                                                 
+## [39] Alexei Ramirez singles on a sharp line drive to left fielder Shane Victorino.   Adam LaRoche to 2nd.                                                                 
+## [40] Geovany Soto singles on a bunt ground ball to first baseman C.  J.   Cron.   Adam LaRoche to 3rd.    Alexei Ramirez to 2nd.                                          
+## [41] Carlos Sanchez singles on a line drive to center fielder Mike Trout.   Adam LaRoche scores.    Alexei Ramirez to 3rd.    Geovany Soto to 2nd.                        
+## [42] Adam Eaton out on a sacrifice fly to left fielder Shane Victorino.   Alexei Ramirez scores.    Geovany Soto to 3rd on the throw.    Carlos Sanchez to 2nd.           
+## [43] Tyler Saladino singles on a soft line drive to left fielder Shane Victorino.   Geovany Soto scores.    Carlos Sanchez to 3rd.                                        
+## [44] Jose Abreu doubles (23) on a sharp line drive to left fielder Shane Victorino.   Carlos Sanchez scores.    Tyler Saladino scores.                                    
+## [45] Melky Cabrera lines out to third baseman Kaleb Cowart.                                                                                                               
+## [46] Jose Alvarez intentionally walks Avisail Garcia.                                                                                                                     
+## [47] Adam LaRoche strikes out swinging.                                                                                                                                   
+## [48] Erick Aybar grounds out sharply, shortstop Alexei Ramirez to first baseman Adam LaRoche.                                                                             
+## [49] Johnny Giavotella strikes out swinging.                                                                                                                              
+## [50] Chris Iannetta singles on a ground ball to center fielder Adam Eaton.                                                                                                
+## [51] Kaleb Cowart pops out to third baseman Tyler Saladino in foul territory.                                                                                             
+## [52] Alexei Ramirez lines out to right fielder Kole Calhoun.                                                                                                              
+## [53] Geovany Soto called out on strikes.                                                                                                                                  
+## [54] Carlos Sanchez grounds out, third baseman Kaleb Cowart to first baseman C.  J.   Cron.                                                                               
+## [55] Shane Victorino strikes out swinging.                                                                                                                                
+## [56] Kole Calhoun walks.                                                                                                                                                  
+## [57] Mike Trout grounds into a double play, shortstop Alexei Ramirez to second baseman Carlos Sanchez to first baseman Adam LaRoche.   Kole Calhoun out at 2nd.           
+## [58] Adam Eaton singles on a bunt ground ball to first baseman C.  J.   Cron.                                                                                             
+## [59] Tyler Saladino strikes out swinging.                                                                                                                                 
+## [60] Jose Abreu strikes out swinging.                                                                                                                                     
+## [61] Melky Cabrera flies out to center fielder Mike Trout.                                                                                                                
+## [62] Albert Pujols grounds out, shortstop Alexei Ramirez to first baseman Adam LaRoche.                                                                                   
+## [63] C.  J.   Cron grounds out softly, shortstop Alexei Ramirez to first baseman Adam LaRoche.                                                                            
+## [64] Erick Aybar grounds out, shortstop Alexei Ramirez to first baseman Adam LaRoche.                                                                                     
+## [65] Avisail Garcia doubles (15) on a sharp line drive to center fielder Mike Trout.                                                                                      
+## [66] Adam LaRoche homers (11) on a line drive to right center field.    Avisail Garcia scores.                                                                            
+## [67] Alexei Ramirez walks.                                                                                                                                                
+## [68] Geovany Soto doubles (8) on a sharp line drive to center fielder Mike Trout.   Alexei Ramirez to 3rd.                                                                
+## [69] Carlos Sanchez called out on strikes.                                                                                                                                
+## [70] Trayce Thompson called out on strikes.                                                                                                                               
+## [71] Tyler Saladino strikes out swinging.                                                                                                                                 
+## [72] Johnny Giavotella grounds out, second baseman Carlos Sanchez to first baseman Adam LaRoche.                                                                          
+## [73] Chris Iannetta flies out to right fielder Avisail Garcia.                                                                                                            
+## [74] Kaleb Cowart grounds out, shortstop Alexei Ramirez to first baseman Adam LaRoche.                                                                                    
+## [75] Jose Abreu grounds out, third baseman Kaleb Cowart to first baseman C.   Cron.                                                                                       
+## [76] Melky Cabrera lines out sharply to center fielder Shane Victorino.                                                                                                   
+## [77] Avisail Garcia flies out to center fielder Shane Victorino.                                                                                                          
+## 90 Levels: Adam Eaton doubles (20) on a line drive to right fielder Kole Calhoun.   ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>工欲善其事，必先利其器</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">str(gd$ds)
+</code></pre>
+
+<pre><code>## Classes &#39;GameDayPlays&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    77 obs. of  62 variables:
+##  $ pitcherId     : num  500779 500779 500779 500779 500779 ...
+##  $ batterId      : num  425664 594777 545361 405395 543068 ...
+##  $ field_teamId  : chr  &quot;145&quot; &quot;145&quot; &quot;145&quot; &quot;145&quot; ...
+##  $ ab_num        : num  5 6 7 8 9 1 2 3 4 13 ...
+##  $ inning        : num  1 1 1 1 1 1 1 1 1 2 ...
+##  $ half          : Factor w/ 2 levels &quot;bottom&quot;,&quot;top&quot;: 1 1 1 1 1 2 2 2 2 1 ...
+##  $ balls         : num  1 1 3 3 0 1 0 1 1 0 ...
+##  $ strikes       : num  2 1 1 2 0 2 0 2 2 0 ...
+##  $ endOuts       : num  0 1 1 2 3 0 1 2 3 1 ...
+##  $ event         : Factor w/ 21 levels &quot;Defensive Sub&quot;,..: 18 11 3 8 8 3 16 8 11 11 ...
+##  $ actionId      : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ description   : Factor w/ 90 levels &quot;Adam Eaton doubles (20) on a line drive to right fielder Kole Calhoun.  &quot;,..: 81 59 68 9 23 1 85 50 65 40 ...
+##  $ stand         : Factor w/ 2 levels &quot;L&quot;,&quot;R&quot;: 2 1 2 2 2 1 2 2 1 2 ...
+##  $ throws        : Factor w/ 2 levels &quot;L&quot;,&quot;R&quot;: 1 1 1 1 1 2 2 2 2 1 ...
+##  $ runnerMovement: chr  &quot;[425664::1B::Single]&quot; &quot;&quot; &quot;[425664:1B::T:Pickoff Attempt 1B][545361::2B::Pickoff Attempt 1B]&quot; &quot;&quot; ...
+##  $ x             : num  95.1 89 175.1 107.8 101.2 ...
+##  $ y             : num  144.7 74.8 60.5 157.1 166.5 ...
+##  $ game_type     : Factor w/ 1 level &quot;R&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ home_team     : Factor w/ 1 level &quot;ana&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ home_teamId   : num  108 108 108 108 108 108 108 108 108 108 ...
+##  $ home_lg       : Factor w/ 1 level &quot;AL&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ away_team     : Factor w/ 1 level &quot;cha&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ away_teamId   : num  145 145 145 145 145 145 145 145 145 145 ...
+##  $ away_lg       : Factor w/ 1 level &quot;AL&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ venueId       : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ stadium       : Factor w/ 1 level &quot;Angel Stadium of Anaheim&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ timestamp     : chr  &quot;2015-08-21 02:15:29&quot; &quot;2015-08-21 02:17:28&quot; &quot;2015-08-21 02:19:40&quot; &quot;2015-08-21 02:22:24&quot; ...
+##  $ playerId.C    : num  434567 434567 434567 434567 434567 ...
+##  $ playerId.1B   : num  425560 425560 425560 425560 425560 ...
+##  $ playerId.2B   : num  570560 570560 570560 570560 570560 ...
+##  $ playerId.3B   : num  573135 573135 573135 573135 573135 ...
+##  $ playerId.SS   : num  493351 493351 493351 493351 493351 ...
+##  $ playerId.LF   : num  466320 466320 466320 466320 466320 ...
+##  $ playerId.CF   : num  594809 594809 594809 594809 594809 ...
+##  $ playerId.RF   : num  541645 541645 541645 541645 541645 ...
+##  $ batterPos     : chr  &quot;LF&quot; &quot;RF&quot; &quot;CF&quot; &quot;DH&quot; ...
+##  $ batterName    : Factor w/ 30 levels &quot;Abreu&quot;,&quot;Alvarez, J&quot;,..: 30 6 29 19 8 10 23 1 5 3 ...
+##  $ pitcherName   : Factor w/ 30 levels &quot;Abreu&quot;,&quot;Alvarez, J&quot;,..: 20 20 20 20 20 28 28 28 28 20 ...
+##  $ runsOnPlay    : int  0 0 1 0 0 0 0 1 0 0 ...
+##  $ startOuts     : num  0 0 1 1 2 0 0 1 2 0 ...
+##  $ runsInInning  : int  1 1 1 1 1 1 1 1 1 0 ...
+##  $ runsITD       : num  0 0 0 1 1 0 0 0 1 0 ...
+##  $ runsFuture    : num  1 1 1 0 0 1 1 1 0 0 ...
+##  $ start1B       : chr  NA &quot;425664&quot; &quot;425664&quot; NA ...
+##  $ start2B       : chr  NA NA NA &quot;545361&quot; ...
+##  $ start3B       : chr  NA NA NA NA ...
+##  $ end1B         : chr  &quot;425664&quot; &quot;425664&quot; NA NA ...
+##  $ end2B         : chr  NA NA &quot;545361&quot; &quot;545361&quot; ...
+##  $ end3B         : chr  NA NA NA NA ...
+##  $ outsInInning  : num  3 3 3 3 3 3 3 3 3 3 ...
+##  $ startCode     : num  0 1 1 2 2 0 2 4 0 0 ...
+##  $ endCode       : num  1 1 2 2 0 2 4 0 0 0 ...
+##  $ fielderId     : num  NA 466320 NA 493351 573135 ...
+##  $ gameId        : chr  &quot;gid_2015_08_20_chamlb_anamlb_1&quot; &quot;gid_2015_08_20_chamlb_anamlb_1&quot; &quot;gid_2015_08_20_chamlb_anamlb_1&quot; &quot;gid_2015_08_20_chamlb_anamlb_1&quot; ...
+##  $ isPA          : logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
+##  $ isAB          : logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
+##  $ isHit         : logi  TRUE FALSE TRUE FALSE FALSE TRUE ...
+##  $ isBIP         : logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
+##  $ our.x         : num  -74.6 -89.7 124.9 -42.9 -59.5 ...
+##  $ our.y         : num  135.6 309.9 345.7 104.5 81.2 ...
+##  $ r             : num  155 323 368 113 101 ...
+##  $ theta         : num  2.07 1.85 1.22 1.96 2.2 ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>工欲善其事，必先利其器</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">hit &lt;- data.frame(x = cbind(c(gd$ds$x, gd$ds$our.x)), y = cbind(c(gd$ds$y, gd$ds$our.y)), isHit = gd$ds$isHit)
+# img &lt;- jpeg::readJPEG(&quot;assets/img/670px-Set-up-a-Baseball-Diamond-Step-1.jpg&quot;)
+# g &lt;- rasterGrob(img, interpolate=TRUE)
+ggplot(data = hit, aes(x = x, y = y, color = isHit)) + coord_fixed() + 
+#   annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) + 
+  geom_point(size = 6, alpha = 0.4) + geom_density2d(colour = &quot;black&quot;, size = 1, alpha = 0.5)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Recap</h2>
+  </hgroup>
+  <article data-timings="">
+    <h3>拿資料</h3>
+
+<ul>
+<li><p>靜態資料庫</p>
+
+<ul>
+<li><a href="http://lahman.r-forge.r-project.org/">Lahman Database</a></li>
+</ul></li>
+<li><p>即時資料源</p>
+
+<ul>
+<li><a href="https://baseballwithr.wordpress.com/2014/03/17/introduction-to-openwar/">openWAR</a></li>
+</ul></li>
+<li><p>隨時爬網頁</p>
+
+<ul>
+<li><a href="https://cran.r-project.org/web/packages/httr/index.html">httr</a></li>
+<li><a href="https://cran.r-project.org/web/packages/XML/index.html">XML</a></li>
+<li><a href="http://www.omegahat.org/RJSONIO/">RJSONIO</a></li>
+<li><a href="http://ropensci.github.io/RSelenium/">RSelenium</a></li>
+<li><a href="http://phantomjs.org/">phantomJS</a></li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>Recap</h2>
+  </hgroup>
+  <article data-timings="">
+    <h3>玩資料</h3>
+
+<ul>
+<li><p>賽博計量學</p>
+
+<ul>
+<li><a href="http://cpsievert.github.io/pitchRx/#2D_animation">pitchRx</a></li>
+<li><a href="https://baseballwithr.wordpress.com/2014/03/17/introduction-to-openwar/">openWAR</a></li>
+</ul></li>
+<li><p>資料視覺化</p>
+
+<ul>
+<li><a href="http://ggplot2.org/">ggplot2</a></li>
+<li><a href="http://yihui.name/recharts/">recharts</a></li>
+<li><a href="http://rstudio.github.io/dygraphs/">dygraphs</a></li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>關於視覺化，我想說的是⋯⋯</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="https://t.kfs.io/upload_images/41788/DSC15_LOGO-___large.jpg" alt="">
+<img src="assets/img/Taiwan-R-logo.png" alt=""></p>
+
+<p><img src="http://datasci.tw/images/course/s001.png" alt="">
+<img src="http://datasci.tw/images/course/s002.png" alt="">
+<img src="http://datasci.tw/images/course/s003.png" alt="">
+<img src="http://datasci.tw/images/course/s004.png" alt="">
+<img src="http://datasci.tw/images/course/s005.png" alt="">
+<img src="http://datasci.tw/images/course/s006.png" alt="">
+<img src="http://datasci.tw/images/course/s007.png" alt="">
+<img src="http://datasci.tw/images/course/s008.png" alt=""></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='R 就是要拿來跑統計啊，不然要幹嘛？'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='NA'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='工欲善其事，必先利其器'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='工欲善其事，必先利其器'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='工欲善其事，必先利其器'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='工欲善其事，必先利其器'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='工欲善其事，必先利其器'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='工欲善其事，必先利其器'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='工欲善其事，必先利其器'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='工欲善其事，必先利其器'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Recap'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='Recap'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='關於視覺化，我想說的是⋯⋯'>
+         13
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

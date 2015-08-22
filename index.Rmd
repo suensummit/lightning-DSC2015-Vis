@@ -1,0 +1,159 @@
+---
+title       : 運動數據視覺化 { 閃電秀 }
+subtitle    : Lightning Talk | R <3 Baseball
+author      : Summit Suen
+job         : Taiwan R User Group
+logo        : Taiwan-R-logo.png
+github      : {user: suensummit, repo: lightning-DSC2015-Vis}
+license     : by-nc-sa
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+--- 
+
+## R 就是要拿來跑統計啊，不然要幹嘛？
+
+![](http://helmetstudio.tk/agar/i/%E6%B3%9B%E8%88%9F%E5%93%A5.png)
+
+--- .title-slide2 #id 
+
+## 
+
+---
+
+## 工欲善其事，必先利其器
+
+```{r}
+# install.packages("Lahman")
+library(Lahman)
+library(dplyr)
+totalRS <- Teams %>% select(yearID, R, G) %>% mutate(AvgRperG = R/G) %>% group_by(yearID) %>% summarise(sum(AvgRperG))
+names(totalRS) <- c("yearID", "RUN")
+head(totalRS)
+```
+
+---
+
+## 工欲善其事，必先利其器
+
+```{r, fig.width=14, fig.height=5}
+library(ggplot2)
+ggplot(data = totalRS, aes(x = yearID, y = RUN)) + stat_smooth() + geom_line()
+```
+
+---
+
+## 工欲善其事，必先利其器
+
+```{r}
+library(Lahman)
+library(dplyr)
+head(filter(Pitching, playerID == "wangch01"))
+```
+
+---
+
+## 工欲善其事，必先利其器
+
+```{r}
+# install.packages("Sxslt", repos = "http://www.omegahat.org/R", type = "source")
+# require(devtools)
+# install_github("openWAR", "beanumber")
+require(openWAR)
+getGameIds(date=as.Date("2015-08-20"))
+```
+
+---
+
+## 工欲善其事，必先利其器
+
+```{r}
+gd = gameday(gameId="gid_2015_08_20_chamlb_anamlb_1")
+gd$url
+
+```
+
+---
+
+## 工欲善其事，必先利其器
+
+```{r}
+# now playing
+gd$ds$inning
+gd$ds$description
+
+```
+
+---
+
+## 工欲善其事，必先利其器
+
+```{r}
+str(gd$ds)
+```
+
+---
+
+## 工欲善其事，必先利其器
+
+```{r, fig.width=16, fig.height=6, warning=FALSE}
+hit <- data.frame(x = cbind(c(gd$ds$x, gd$ds$our.x)), y = cbind(c(gd$ds$y, gd$ds$our.y)), isHit = gd$ds$isHit)
+# img <- jpeg::readJPEG("assets/img/670px-Set-up-a-Baseball-Diamond-Step-1.jpg")
+# g <- rasterGrob(img, interpolate=TRUE)
+ggplot(data = hit, aes(x = x, y = y, color = isHit)) + coord_fixed() + 
+#   annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) + 
+  geom_point(size = 6, alpha = 0.4) + geom_density2d(colour = "black", size = 1, alpha = 0.5)
+```
+
+---
+
+## Recap
+
+### 拿資料
+
+- 靜態資料庫
+  - [Lahman Database](http://lahman.r-forge.r-project.org/)
+
+- 即時資料源
+  - [openWAR](https://baseballwithr.wordpress.com/2014/03/17/introduction-to-openwar/)
+
+- 隨時爬網頁
+  - [httr](https://cran.r-project.org/web/packages/httr/index.html)
+  - [XML](https://cran.r-project.org/web/packages/XML/index.html)
+  - [RJSONIO](http://www.omegahat.org/RJSONIO/)
+  - [RSelenium](http://ropensci.github.io/RSelenium/)
+  - [phantomJS](http://phantomjs.org/)
+
+---
+
+## Recap
+
+### 玩資料
+
+- 賽博計量學
+  - [pitchRx](http://cpsievert.github.io/pitchRx/#2D_animation)
+  - [openWAR](https://baseballwithr.wordpress.com/2014/03/17/introduction-to-openwar/)
+  
+- 資料視覺化
+  - [ggplot2](http://ggplot2.org/)
+  - [recharts](http://yihui.name/recharts/)
+  - [dygraphs](http://rstudio.github.io/dygraphs/)
+
+---
+
+## 關於視覺化，我想說的是⋯⋯
+
+![](https://t.kfs.io/upload_images/41788/DSC15_LOGO-___large.jpg)
+![](assets/img/Taiwan-R-logo.png)
+
+![](http://datasci.tw/images/course/s001.png)
+![](http://datasci.tw/images/course/s002.png)
+![](http://datasci.tw/images/course/s003.png)
+![](http://datasci.tw/images/course/s004.png)
+![](http://datasci.tw/images/course/s005.png)
+![](http://datasci.tw/images/course/s006.png)
+![](http://datasci.tw/images/course/s007.png)
+![](http://datasci.tw/images/course/s008.png)
