@@ -393,14 +393,12 @@ getGameIds(date=as.Date(&quot;2015-08-21&quot;))
   </hgroup>
   <article data-timings="">
     <pre><code class="r">hit &lt;- data.frame(x = cbind(c(gd$ds$x, gd$ds$our.x)), y = cbind(c(gd$ds$y, gd$ds$our.y)), isHit = gd$ds$isHit)
-# img &lt;- jpeg::readJPEG(&quot;assets/img/670px-Set-up-a-Baseball-Diamond-Step-1.jpg&quot;)
-# g &lt;- rasterGrob(img, interpolate=TRUE)
 ggplot(data = hit, aes(x = x, y = y, color = isHit)) + coord_fixed() + 
 #   annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) + 
   geom_point(size = 6, alpha = 0.4) + geom_density2d(colour = &quot;black&quot;, size = 1, alpha = 0.5)
 </code></pre>
 
-<p><img src="assets/fig/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"> </p>
+<p><img src="assets/fig/unnamed-chunk-9-1.png" alt="plot of chunk unnamed-chunk-9"> </p>
 
   </article>
   <!-- Presenter Notes -->
