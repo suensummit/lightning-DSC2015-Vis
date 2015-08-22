@@ -373,6 +373,7 @@ ggplot(data = hit, aes(x = x, y = y, color = isHit)) + coord_fixed() +
 - 賽博計量學
   - [pitchRx](http://cpsievert.github.io/pitchRx/#2D_animation)
   - [openWAR](https://baseballwithr.wordpress.com/2014/03/17/introduction-to-openwar/)
+  - [FanGraphs](http://www.fangraphs.com/)
   
 - 資料視覺化
   - [ggplot2](http://ggplot2.org/)
