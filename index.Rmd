@@ -63,7 +63,7 @@ head(filter(Pitching, playerID == "wangch01"))
 # require(devtools)
 # install_github("openWAR", "beanumber")
 require(openWAR)
-getGameIds(date=as.Date("2015-08-20"))
+getGameIds(date=as.Date("2015-08-21"))
 ```
 
 ---
@@ -71,9 +71,8 @@ getGameIds(date=as.Date("2015-08-20"))
 ## 工欲善其事，必先利其器
 
 ```{r}
-gd = gameday(gameId="gid_2015_08_20_chamlb_anamlb_1")
+gd = gameday(gameId="gid_2015_08_21_tormlb_anamlb_1")
 gd$url
-
 ```
 
 ---
@@ -81,10 +80,8 @@ gd$url
 ## 工欲善其事，必先利其器
 
 ```{r}
-# now playing
 gd$ds$inning
 gd$ds$description
-
 ```
 
 ---
@@ -93,6 +90,7 @@ gd$ds$description
 
 ```{r}
 str(gd$ds)
+
 ```
 
 ---
